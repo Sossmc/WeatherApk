@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WeatherApk</string>
+    <string name="action_settings">Settings</string>
+</resources>
