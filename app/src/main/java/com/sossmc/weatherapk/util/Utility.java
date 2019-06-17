@@ -2,9 +2,11 @@ package com.sossmc.weatherapk.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.sossmc.weatherapk.db.City;
 import com.sossmc.weatherapk.db.County;
 import com.sossmc.weatherapk.db.Province;
+import com.sossmc.weatherapk.gson.Weather;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +33,21 @@ public class Utility {
             }
         }
         return false;//解析失败
+    }
+
+    /*将返回的JSON数据解析成Weather实体类*/
+    public static Weather handleWeatherResponse(String response){
+        try {
+            //通过JSONObject和JSONArray将天气数据中的主体内容解析出来
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            //将JSON数据转换成Weather对象
+            return new Gson().fromJson(weatherContent,Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /*解析和处理服务器返回的市级数据 */
