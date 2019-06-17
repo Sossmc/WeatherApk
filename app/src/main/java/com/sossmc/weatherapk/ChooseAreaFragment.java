@@ -81,7 +81,6 @@ public class ChooseAreaFragment extends Fragment {
         Log.d("ChooseAreaFragment","onActivityCreated");
         super.onActivityCreated(savedInstanceState);
         //列表任意一栏被点击，则...
-        //列表任意一栏被点击，则...
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -97,9 +96,11 @@ public class ChooseAreaFragment extends Fragment {
 
                 /*以下实现地区天气界面*/
                 else if (currentLevel == LEVEL_COUNTY){
+                    Log.d("Debug","tast");
                     String weatherId = countyList.get(position).getWeatherId();
                     Intent intent = new Intent(getActivity(),WeatherActivity.class);
                     intent.putExtra("weather_id",weatherId);
+                    Log.d("Debug",""+weatherId);
                     startActivity(intent);
                     getActivity().finish();
                 }
@@ -116,6 +117,8 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         });
+
+        Log.d("Debug","On load promin");
         queryProvinces();
     }
 
@@ -178,8 +181,6 @@ public class ChooseAreaFragment extends Fragment {
                 if ("county".equals(type)){
                     result = Utility.handleProvinceResponse(responseText);
                 }
-
-
             }
         });
     }
@@ -252,12 +253,13 @@ public class ChooseAreaFragment extends Fragment {
         if (provinceList.size()>0){
             Log.d("DebugTag","数据库中有东西");
             dataList.clear();
-            for (Province province:provinceList){
+            for (Province province:provinceList.subList(0,34)){
                 dataList.add(province.getProvinceName());
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             currentLevel = LEVEL_PROVINCE;
+            Log.d("DebugTag","数据库中有东西2");
         }
         else {
             Log.d("ChooseAreaFragment","服务器查询省中...");

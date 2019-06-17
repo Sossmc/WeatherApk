@@ -3,14 +3,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 
 import com.sossmc.weatherapk.gson.Forecast;
 import com.sossmc.weatherapk.gson.Weather;
@@ -28,6 +31,8 @@ public class WeatherActivity extends AppCompatActivity {
     private ScrollView weatherLayout;
 
     private TextView titleCity;
+
+    private Button backHome;
 
     private TextView titleUpdateTime;
 
@@ -55,14 +60,22 @@ public class WeatherActivity extends AppCompatActivity {
         //定义缓存对象
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather",null);
+        String weatherId = getIntent().getStringExtra("weather_id");
+        Log.d("Debug",""+weatherId);
+
         if (weatherString!=null){
             //有缓存时直接解析天气数据
+            if(weatherId!=null&&!weatherString.substring(31,42).equals(weatherId)){
+                requestWeather(weatherId);
+                return ;
+            }
+            Log.d("Debug",""+weatherString.substring(31,42));
             Weather weather = Utility.handleWeatherResponse(weatherString);
             showWeatherInfo(weather);
         }
         else {
             //无缓存时去服务器查询天气信息
-            String weatherId = getIntent().getStringExtra("weather_id");
+
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
         }
@@ -113,6 +126,12 @@ public class WeatherActivity extends AppCompatActivity {
         String updateTime = weather.basic.update.updateTime.split(" ")[1]; //split：分解
         String degree = weather.now.tempeture+"°C";
         String weatherInfo = weather.now.more.info;
+        backHome.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_main);
+            }
+        });
         titleCity.setText(cityName);
         titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
@@ -147,6 +166,8 @@ public class WeatherActivity extends AppCompatActivity {
     private void initView() {
         weatherLayout = (ScrollView) findViewById(R.id.weather_layout);
         titleCity = (TextView)findViewById(R.id.title_city);
+
+        backHome = (Button)findViewById(R.id.nav_button);
         titleUpdateTime = (TextView)findViewById(R.id.title_update_time);
         degreeText = (TextView)findViewById(R.id.degree_text);
         weatherInfoText = (TextView)findViewById(R.id.weather_info_text);
