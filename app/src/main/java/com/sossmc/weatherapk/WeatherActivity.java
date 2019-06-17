@@ -69,7 +69,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
     /*根据天气ID请求天气信息*/
     private void requestWeather(final String weatherId) {
-        String weatherUrl = "http://guolin.tech/api/weather?cityid="+weatherId+"&key=5d816014b46e4fe08b5ae9fd3e6d701d";
+        String weatherUrl = "http://guolin.tech/api/weather?cityid="+weatherId/*+"&key=5d816014b46e4fe08b5ae9fd3e6d701d"*/;
 
         HttpUtil.sendOKHttpRequest(weatherUrl, new Callback(){
             @Override
